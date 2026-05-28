@@ -12,7 +12,8 @@ services:
 
     # Comando de BUILD: compila o projeto e gera o JAR executável
     # -DskipTests: pula os testes para acelerar o build
-    buildCommand: mvn clean package -DskipTests
+    # ./mvnw baixa o Maven automaticamente se não estiver instalado
+    buildCommand: chmod +x mvnw && ./mvnw clean package -DskipTests
 
     # Comando de START: executa o JAR gerado
     # O Render injeta a variável PORT automaticamente

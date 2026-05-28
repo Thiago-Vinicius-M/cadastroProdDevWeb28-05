@@ -1,0 +1,528 @@
+/* ==============================================
+   SISTEMA DE PRODUTOS - Estilos Globais
+   ============================================== */
+
+/* ---- Variáveis CSS (tema da aplicação) ---- */
+:root {
+    --azul-primario:   #2563EB;
+    --azul-hover:      #1D4ED8;
+    --azul-claro:      #EFF6FF;
+    --verde:           #16A34A;
+    --verde-claro:     #F0FDF4;
+    --vermelho:        #DC2626;
+    --vermelho-claro:  #FEF2F2;
+    --cinza-50:        #F9FAFB;
+    --cinza-100:       #F3F4F6;
+    --cinza-200:       #E5E7EB;
+    --cinza-400:       #9CA3AF;
+    --cinza-600:       #4B5563;
+    --cinza-800:       #1F2937;
+    --branco:          #FFFFFF;
+    --sombra:          0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+    --sombra-lg:       0 4px 6px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06);
+    --raio:            8px;
+    --raio-sm:         4px;
+    --fonte:           'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ---- Reset e base ---- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--fonte);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--cinza-800);
+    background-color: var(--cinza-50);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==============================================
+   PÁGINA DE LOGIN
+   ============================================== */
+
+.login-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+}
+
+.login-container {
+    background: var(--branco);
+    border-radius: 12px;
+    box-shadow: var(--sombra-lg);
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.login-logo {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.login-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--cinza-800);
+    margin-bottom: 8px;
+}
+
+.login-subtitle {
+    color: var(--cinza-400);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.login-hint {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--cinza-400);
+}
+
+.login-form {
+    text-align: left;
+}
+
+/* ==============================================
+   ALERTAS
+   ============================================== */
+
+.alert {
+    padding: 12px 16px;
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.alert-error {
+    background-color: var(--vermelho-claro);
+    color: var(--vermelho);
+    border-left: 4px solid var(--vermelho);
+}
+
+.alert-success {
+    background-color: var(--verde-claro);
+    color: var(--verde);
+    border-left: 4px solid var(--verde);
+}
+
+/* ==============================================
+   FORMULÁRIOS
+   ============================================== */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cinza-600);
+    letter-spacing: 0.02em;
+}
+
+.form-group input {
+    padding: 10px 14px;
+    border: 1.5px solid var(--cinza-200);
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    font-family: var(--fonte);
+    color: var(--cinza-800);
+    background: var(--branco);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--azul-primario);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group input::placeholder {
+    color: var(--cinza-400);
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+/* ==============================================
+   BOTÕES
+   ============================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--fonte);
+    cursor: pointer;
+    border: 2px solid transparent;
+    text-decoration: none;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-primary {
+    background-color: var(--azul-primario);
+    color: var(--branco);
+    border-color: var(--azul-primario);
+}
+
+.btn-primary:hover {
+    background-color: var(--azul-hover);
+    border-color: var(--azul-hover);
+}
+
+.btn-secondary {
+    background-color: var(--branco);
+    color: var(--azul-primario);
+    border-color: var(--azul-primario);
+}
+
+.btn-secondary:hover {
+    background-color: var(--azul-claro);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--branco);
+    border-color: rgba(255,255,255,0.5);
+}
+
+.btn-outline:hover {
+    background-color: rgba(255,255,255,0.15);
+    border-color: var(--branco);
+}
+
+.btn-danger {
+    background-color: var(--vermelho-claro);
+    color: var(--vermelho);
+    border-color: transparent;
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.btn-danger:hover {
+    background-color: var(--vermelho);
+    color: var(--branco);
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
+/* ==============================================
+   HEADER
+   ============================================== */
+
+.app-header {
+    background: linear-gradient(90deg, var(--azul-primario) 0%, #1E40AF 100%);
+    color: var(--branco);
+    padding: 0 24px;
+    box-shadow: var(--sombra);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 960px;
+    margin: 0 auto;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-badge {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* ==============================================
+   LAYOUT PRINCIPAL
+   ============================================== */
+
+.app-main {
+    flex: 1;
+    max-width: 960px;
+    width: 100%;
+    margin: 32px auto;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ==============================================
+   CARDS
+   ============================================== */
+
+.card {
+    background: var(--branco);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 20px 24px;
+    border-bottom: 1.5px solid var(--cinza-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--cinza-800);
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* ==============================================
+   BADGE / CONTADOR
+   ============================================== */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background-color: var(--azul-claro);
+    color: var(--azul-primario);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ==============================================
+   FORMULÁRIO DE PRODUTO (na página principal)
+   ============================================== */
+
+.produto-form {
+    margin-bottom: 0;
+}
+
+/* ==============================================
+   TABELA
+   ============================================== */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table thead th {
+    padding: 12px 16px;
+    background-color: var(--cinza-50);
+    color: var(--cinza-600);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: left;
+    border-bottom: 2px solid var(--cinza-200);
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--cinza-100);
+    transition: background-color 0.15s;
+}
+
+.table tbody tr:hover {
+    background-color: var(--cinza-50);
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table tbody td {
+    padding: 14px 16px;
+    color: var(--cinza-800);
+    vertical-align: middle;
+}
+
+.table tbody td:first-child {
+    color: var(--cinza-400);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.preco-cell {
+    font-weight: 600;
+    color: var(--verde) !important;
+}
+
+.qtd-cell {
+    font-weight: 500;
+}
+
+/* ==============================================
+   ESTADO VAZIO (sem produtos)
+   ============================================== */
+
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--cinza-400);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.empty-state p {
+    font-size: 15px;
+}
+
+.empty-hint {
+    font-size: 13px !important;
+    color: var(--cinza-400);
+}
+
+/* ==============================================
+   MENSAGEM DE FEEDBACK (AJAX)
+   ============================================== */
+
+.mensagem {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: var(--raio-sm);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.mensagem.sucesso {
+    background-color: var(--verde-claro);
+    color: var(--verde);
+    border-left: 4px solid var(--verde);
+}
+
+.mensagem.erro {
+    background-color: var(--vermelho-claro);
+    color: var(--vermelho);
+    border-left: 4px solid var(--vermelho);
+}
+
+/* ==============================================
+   FOOTER
+   ============================================== */
+
+.app-footer {
+    background: var(--cinza-800);
+    color: var(--cinza-400);
+    text-align: center;
+    padding: 16px 24px;
+    font-size: 12px;
+    margin-top: auto;
+}
+
+/* ==============================================
+   RESPONSIVO
+   ============================================== */
+
+@media (max-width: 640px) {
+
+    .header-content {
+        gap: 12px;
+    }
+
+    .header-brand span {
+        display: none; /* oculta texto, mantém ícone */
+    }
+
+    .app-main {
+        margin: 16px auto;
+        padding: 0 12px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-full, .form-actions .btn {
+        width: 100%;
+    }
+
+    .table thead th:nth-child(3),
+    .table tbody td:nth-child(3) {
+        display: none; /* oculta coluna Categoria em mobile */
+    }
+
+    .login-container {
+        padding: 32px 24px;
+        margin: 16px;
+    }
+}

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    TEMPLATE JASPERREPORTS - produtos.jrxml
+    =========================================
+    Este arquivo define a estrutura visual do relatório PDF.
+
+    Estrutura de um relatório JasperReports:
+    - <title>        : Cabeçalho impresso UMA VEZ no início
+    - <columnHeader> : Cabeçalho de coluna, impresso UMA VEZ por página
+    - <detail>       : Conteúdo repetido para CADA LINHA de dados
+    - <summary>      : Rodapé impresso UMA VEZ no final
+    - <pageFooter>   : Rodapé de página, impresso em CADA PÁGINA
+
+    Dimensões:
+    - pageWidth="595" pageHeight="842" = A4 em pontos (72 pontos/polegada)
+    - leftMargin/rightMargin = margens laterais
+-->
+<jasperReport
+    xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+        http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="produtos"
+    pageWidth="595"
+    pageHeight="842"
+    columnWidth="535"
+    leftMargin="30"
+    rightMargin="30"
+    topMargin="20"
+    bottomMargin="20"
+    uuid="a1b2c3d4-e5f6-7890-abcd-ef1234567890">
+
+    <!--
+        PARÂMETROS: valores passados pelo Java no momento do preenchimento.
+        O controller passa "TITULO_RELATORIO" no Map de parâmetros.
+    -->
+    <parameter name="TITULO_RELATORIO" class="java.lang.String">
+        <defaultValueExpression><![CDATA["Relatório de Produtos"]]></defaultValueExpression>
+    </parameter>
+
+    <!--
+        CAMPOS: mapeiam para os getters da classe Produto.
+        Ex: field "nome" -> Produto.getNome()
+        O JRBeanCollectionDataSource faz esse mapeamento automaticamente.
+    -->
+    <field name="id"         class="java.lang.Long"/>
+    <field name="nome"       class="java.lang.String"/>
+    <field name="categoria"  class="java.lang.String"/>
+    <field name="preco"      class="java.lang.Double"/>
+    <field name="quantidade" class="java.lang.Integer"/>
+
+    <!-- ============================================================ -->
+    <!-- TÍTULO - impresso uma vez no início do relatório             -->
+    <!-- ============================================================ -->
+    <title>
+        <band height="70" splitType="Stretch">
+
+            <!-- Linha decorativa no topo -->
+            <line>
+                <reportElement x="0" y="0" width="535" height="1" uuid="line-top"/>
+                <graphicElement>
+                    <pen lineWidth="3.0" lineColor="#2563EB"/>
+                </graphicElement>
+            </line>
+
+            <!-- Título do relatório (usa o parâmetro passado pelo Java) -->
+            <textField>
+                <reportElement x="0" y="10" width="535" height="35" uuid="titulo"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="20" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{TITULO_RELATORIO}]]></textFieldExpression>
+            </textField>
+
+            <!-- Data e hora de geração -->
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement x="0" y="48" width="535" height="15" uuid="data-geracao"
+                               forecolor="#6B7280"/>
+                <textElement textAlignment="Center">
+                    <font size="9" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+
+            <!-- Linha decorativa abaixo do título -->
+            <line>
+                <reportElement x="0" y="67" width="535" height="1" uuid="line-bottom-title"/>
+                <graphicElement>
+                    <pen lineWidth="1.0" lineColor="#E5E7EB"/>
+                </graphicElement>
+            </line>
+
+        </band>
+    </title>
+
+    <!-- ============================================================ -->
+    <!-- CABEÇALHO DE COLUNAS - impresso no início de cada página     -->
+    <!-- ============================================================ -->
+    <columnHeader>
+        <band height="30" splitType="Stretch">
+
+            <!-- Fundo azul para o cabeçalho -->
+            <rectangle>
+                <reportElement x="0" y="0" width="535" height="30" uuid="header-bg"
+                               backcolor="#2563EB" forecolor="#2563EB"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- ID -->
+            <staticText>
+                <reportElement x="0" y="0" width="50" height="30" uuid="h-id"
+                               forecolor="#FFFFFF" backcolor="#2563EB" mode="Opaque"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[ID]]></text>
+            </staticText>
+
+            <!-- NOME -->
+            <staticText>
+                <reportElement x="50" y="0" width="155" height="30" uuid="h-nome"
+                               forecolor="#FFFFFF" backcolor="#2563EB" mode="Opaque"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="10" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[  Nome]]></text>
+            </staticText>
+
+            <!-- CATEGORIA -->
+            <staticText>
+                <reportElement x="205" y="0" width="120" height="30" uuid="h-categoria"
+                               forecolor="#FFFFFF" backcolor="#2563EB" mode="Opaque"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="10" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[  Categoria]]></text>
+            </staticText>
+
+            <!-- PREÇO -->
+            <staticText>
+                <reportElement x="325" y="0" width="105" height="30" uuid="h-preco"
+                               forecolor="#FFFFFF" backcolor="#2563EB" mode="Opaque"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="10" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[Preço  ]]></text>
+            </staticText>
+
+            <!-- QUANTIDADE -->
+            <staticText>
+                <reportElement x="430" y="0" width="105" height="30" uuid="h-qtd"
+                               forecolor="#FFFFFF" backcolor="#2563EB" mode="Opaque"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="10" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[Qtd.  ]]></text>
+            </staticText>
+
+        </band>
+    </columnHeader>
+
+    <!-- ============================================================ -->
+    <!-- DETALHE - repetido para CADA produto da lista                -->
+    <!-- ============================================================ -->
+    <detail>
+        <band height="25" splitType="Stretch">
+
+            <!-- Linha divisória entre linhas -->
+            <line>
+                <reportElement x="0" y="24" width="535" height="1" uuid="detail-line"
+                               forecolor="#F3F4F6"/>
+            </line>
+
+            <!-- ID do produto -->
+            <textField>
+                <reportElement x="0" y="0" width="50" height="25" uuid="d-id"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="9" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+            </textField>
+
+            <!-- Nome do produto -->
+            <textField isStretchWithOverflow="true">
+                <reportElement x="50" y="0" width="155" height="25" uuid="d-nome"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="9" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA["  " + $F{nome}]]></textFieldExpression>
+            </textField>
+
+            <!-- Categoria -->
+            <textField>
+                <reportElement x="205" y="0" width="120" height="25" uuid="d-categoria"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="9" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA["  " + $F{categoria}]]></textFieldExpression>
+            </textField>
+
+            <!-- Preço formatado como moeda brasileira -->
+            <textField pattern="R$ #,##0.00">
+                <reportElement x="325" y="0" width="105" height="25" uuid="d-preco"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="9" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{preco}]]></textFieldExpression>
+            </textField>
+
+            <!-- Quantidade -->
+            <textField>
+                <reportElement x="430" y="0" width="105" height="25" uuid="d-qtd"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="9" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{quantidade} + "  "]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </detail>
+
+    <!-- ============================================================ -->
+    <!-- RODAPÉ DE PÁGINA - impresso em cada página                   -->
+    <!-- ============================================================ -->
+    <pageFooter>
+        <band height="25" splitType="Stretch">
+
+            <line>
+                <reportElement x="0" y="0" width="535" height="1" uuid="footer-line"
+                               forecolor="#E5E7EB"/>
+            </line>
+
+            <!-- Número da página -->
+            <textField>
+                <reportElement x="0" y="5" width="535" height="15" uuid="page-num"
+                               forecolor="#9CA3AF"/>
+                <textElement textAlignment="Center">
+                    <font size="8" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA["Página " + $V{PAGE_NUMBER}]]>
+                </textFieldExpression>
+            </textField>
+
+        </band>
+    </pageFooter>
+
+    <!-- ============================================================ -->
+    <!-- SUMÁRIO - impresso uma vez no final do relatório             -->
+    <!-- ============================================================ -->
+    <summary>
+        <band height="35" splitType="Stretch">
+
+            <line>
+                <reportElement x="0" y="0" width="535" height="1" uuid="summary-line"
+                               forecolor="#2563EB"/>
+                <graphicElement>
+                    <pen lineWidth="2.0"/>
+                </graphicElement>
+            </line>
+
+            <!-- Total de registros -->
+            <staticText>
+                <reportElement x="0" y="8" width="300" height="20" uuid="total-label"/>
+                <textElement>
+                    <font size="10" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[Total de produtos cadastrados:]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="300" y="8" width="235" height="20" uuid="total-count"/>
+                <textElement textAlignment="Left">
+                    <font size="10" isBold="true" fontName="SansSerif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </summary>
+
+</jasperReport>
