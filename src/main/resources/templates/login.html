@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+    login.html - Página de autenticação
+    =====================================
+    Thymeleaf processa este arquivo no servidor antes de enviar ao browser.
+    xmlns:th="..." habilita os atributos th:* do Thymeleaf.
+
+    Spring Security intercepta automaticamente POST /login e valida
+    as credenciais. Não precisamos criar nenhum controller de login!
+-->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Produtos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!--
+        th:href="@{/css/style.css}"
+        @{} é o operador de URL do Thymeleaf: gera o caminho correto
+        independente do contexto de deploy (local ou no Render).
+    -->
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+
+        <!-- Ícone / Logo -->
+        <div class="login-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                 fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+        </div>
+
+        <h1 class="login-title">Sistema de Produtos</h1>
+        <p class="login-subtitle">Faça login para continuar</p>
+
+        <!--
+            th:if="${param.erro}" verifica se a URL contém ?erro=1
+            Quando o login falha, o Spring Security redireciona para /login?erro=1
+        -->
+        <div th:if="${param.erro}" class="alert alert-error">
+            Usuário ou senha incorretos. Tente novamente.
+        </div>
+
+        <!--
+            th:if="${param.logout}" verifica se veio de um logout
+            Após o logout, o Spring Security redireciona para /login?logout
+        -->
+        <div th:if="${param.logout}" class="alert alert-success">
+            Você saiu com sucesso.
+        </div>
+
+        <!--
+            Formulário de login.
+            action="/login" é interceptado pelo Spring Security.
+            O método DEVE ser POST.
+            Os campos DEVEM se chamar "username" e "password" (padrão Spring Security).
+        -->
+        <form th:action="@{/login}" method="post" class="login-form">
+
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="admin"
+                    autocomplete="username"
+                    required
+                    autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••"
+                    autocomplete="current-password"
+                    required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">
+                Entrar
+            </button>
+
+        </form>
+
+        <p class="login-hint">
+            Credenciais: <strong>admin</strong> / <strong>123</strong>
+        </p>
+
+    </div>
+
+</body>
+</html>

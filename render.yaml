@@ -1,0 +1,29 @@
+# render.yaml - Configuração de deploy no Render
+# =================================================
+# Este arquivo descreve como o Render deve construir e executar a aplicação.
+# O Render lê este arquivo automaticamente ao conectar o repositório.
+#
+# Documentação: https://render.com/docs/render-yaml-reference
+
+services:
+  - type: web                  # tipo de serviço: aplicação web com porta HTTP
+    name: produtos-app         # nome exibido no dashboard do Render
+    env: java                  # ambiente de execução: Java
+
+    # Comando de BUILD: compila o projeto e gera o JAR executável
+    # -DskipTests: pula os testes para acelerar o build
+    buildCommand: mvn clean package -DskipTests
+
+    # Comando de START: executa o JAR gerado
+    # O Render injeta a variável PORT automaticamente
+    # O application.properties usa: server.port=${PORT:8080}
+    startCommand: java -jar target/produtos-0.0.1-SNAPSHOT.jar
+
+    # Plano gratuito do Render
+    # Obs: no plano free, a app "dorme" após 15min sem requisições
+    plan: free
+
+    # Variáveis de ambiente (opcional - o H2 não precisa de configuração extra)
+    envVars:
+      - key: JAVA_OPTS
+        value: "-Xmx256m -Xms128m"  # limita memória RAM (importante no plano free)

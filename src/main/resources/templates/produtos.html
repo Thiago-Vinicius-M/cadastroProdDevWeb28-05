@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!--
+    produtos.html - Página principal da aplicação
+    ================================================
+    Esta página é renderizada pelo Thymeleaf no servidor e enviada
+    ao browser. Após carregada, o JavaScript (app.js) faz chamadas
+    AJAX para buscar/cadastrar/excluir produtos SEM recarregar a página.
+
+    xmlns:th     -> dialeto Thymeleaf (atributos th:*)
+    xmlns:sec    -> dialeto Spring Security (atributos sec:*)
+-->
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Sistema de Cadastro</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- HEADER                                                       -->
+    <!-- ============================================================ -->
+    <header class="app-header">
+        <div class="header-content">
+
+            <div class="header-brand">
+                <!-- Ícone de produto -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <span>Sistema de Produtos</span>
+            </div>
+
+            <div class="header-user">
+                <!--
+                    sec:authentication="name" exibe o nome do usuário logado.
+                    O dialeto Spring Security acessa o contexto de autenticação.
+                -->
+                <span class="user-badge">
+                    Olá, <strong sec:authentication="name">usuário</strong>
+                </span>
+
+                <!--
+                    Formulário de logout. Spring Security intercepta POST /logout
+                    e invalida a sessão automaticamente.
+                -->
+                <form th:action="@{/logout}" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-outline btn-sm">
+                        Sair
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- CONTEÚDO PRINCIPAL                                           -->
+    <!-- ============================================================ -->
+    <main class="app-main">
+
+        <!-- ===== CARD: FORMULÁRIO DE CADASTRO ===== -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Cadastrar Produto</h2>
+            </div>
+            <div class="card-body">
+
+                <!--
+                    O submit deste formulário é interceptado pelo JavaScript (app.js).
+                    O event.preventDefault() impede o recarregamento da página.
+                    Os dados são enviados via fetch API para POST /api/produtos.
+                -->
+                <form id="form-produto" class="produto-form">
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="nome">Nome do Produto</label>
+                            <input type="text" id="nome" name="nome"
+                                   placeholder="Ex: Notebook Dell" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="categoria">Categoria</label>
+                            <input type="text" id="categoria" name="categoria"
+                                   placeholder="Ex: Eletrônicos" required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="preco">Preço (R$)</label>
+                            <input type="number" id="preco" name="preco"
+                                   placeholder="0.00" step="0.01" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantidade">Quantidade</label>
+                            <input type="number" id="quantidade" name="quantidade"
+                                   placeholder="0" min="0" required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            + Cadastrar Produto
+                        </button>
+
+                        <!--
+                            Botão de relatório: abre /relatorio em nova aba.
+                            O servidor gera o PDF e o browser exibe/baixa.
+                        -->
+                        <a th:href="@{/relatorio}" target="_blank" class="btn btn-secondary">
+                            Gerar Relatório PDF
+                        </a>
+                    </div>
+
+                </form>
+
+                <!-- Área de mensagens de feedback -->
+                <div id="mensagem" class="mensagem" style="display:none"></div>
+
+            </div>
+        </div>
+
+        <!-- ===== CARD: TABELA DE PRODUTOS ===== -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Produtos Cadastrados</h2>
+                <!-- Contador dinâmico, atualizado pelo JavaScript -->
+                <span id="contador-produtos" class="badge">0 produtos</span>
+            </div>
+            <div class="card-body">
+
+                <div class="table-wrapper">
+                    <table id="tabela-produtos" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Qtd.</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <!--
+                            tbody é populado dinamicamente pelo JavaScript (app.js).
+                            Ao carregar a página, carregarProdutos() busca via
+                            GET /api/produtos e insere as linhas aqui.
+                        -->
+                        <tbody id="corpo-tabela">
+                            <!-- As linhas são inseridas pelo JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <!-- Mensagem exibida quando não há produtos -->
+                    <div id="sem-produtos" class="empty-state" style="display:none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
+                             viewBox="0 0 24 24" fill="none" stroke="#9CA3AF"
+                             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                        <p>Nenhum produto cadastrado ainda.</p>
+                        <p class="empty-hint">Use o formulário acima para adicionar o primeiro produto.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER                                                       -->
+    <!-- ============================================================ -->
+    <footer class="app-footer">
+        <p>Sistema de Cadastro de Produtos &mdash; Atividade Acadêmica &mdash; Spring Boot + JPA + AJAX</p>
+    </footer>
+
+    <!--
+        app.js carregado ao final do body para garantir que o DOM
+        já está completamente carregado antes do JavaScript executar.
+        th:src="@{/js/app.js}" gera o caminho correto.
+    -->
+    <script th:src="@{/js/app.js}"></script>
+
+</body>
+</html>
