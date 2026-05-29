@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Remove-Item -Recurse -Force \"e:\\\\Projetos\\\\Faculdade\\\\DevWebApr28-05\\\\render.yaml\" -ErrorAction SilentlyContinue)",
+      "Bash(Remove-Item -Recurse -Force \"e:\\\\Projetos\\\\Faculdade\\\\DevWebApr28-05\\\\mvnw\" -ErrorAction SilentlyContinue)",
+      "Bash(Remove-Item -Recurse -Force \"e:\\\\Projetos\\\\Faculdade\\\\DevWebApr28-05\\\\.mvn\" -ErrorAction SilentlyContinue)"
+    ]
+  }
+}

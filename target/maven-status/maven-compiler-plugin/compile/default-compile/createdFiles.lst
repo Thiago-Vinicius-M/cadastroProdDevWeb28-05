@@ -1,0 +1,8 @@
+com\exemplo\produtos\service\ProdutoService.class
+com\exemplo\produtos\controller\RelatorioController.class
+com\exemplo\produtos\controller\ProdutoController.class
+com\exemplo\produtos\model\Produto.class
+com\exemplo\produtos\controller\AuthController.class
+com\exemplo\produtos\repository\ProdutoRepository.class
+com\exemplo\produtos\security\SecurityConfig.class
+com\exemplo\produtos\ProdutosApplication.class

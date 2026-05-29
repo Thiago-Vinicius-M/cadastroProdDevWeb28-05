@@ -2,84 +2,104 @@ package com.exemplo.produtos.controller;
 
 import com.exemplo.produtos.model.Produto;
 import com.exemplo.produtos.service.ProdutoService;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
 import jakarta.servlet.http.HttpServletResponse;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.io.InputStream;
-import java.util.HashMap;
+import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Controller responsável por gerar o relatório PDF com JasperReports.
- *
- * Fluxo de geração do PDF:
- *
- *   1. Carrega o template .jrxml do classpath
- *   2. Compila o .jrxml em um JasperReport (objeto em memória)
- *   3. Busca os dados do banco via ProdutoService
- *   4. Cria um JRBeanCollectionDataSource com a lista de produtos
- *   5. Preenche o relatório com os dados
- *   6. Exporta para bytes PDF
- *   7. Escreve os bytes na resposta HTTP
- *
- * O browser recebe o PDF e o exibe ou faz download automaticamente.
- */
 @Controller
 public class RelatorioController {
 
     @Autowired
     private ProdutoService service;
 
-    /**
-     * Gera e retorna um PDF com todos os produtos cadastrados.
-     *
-     * GET /relatorio -> resposta HTTP com Content-Type: application/pdf
-     */
     @GetMapping("/relatorio")
     public void gerarRelatorio(HttpServletResponse response) throws Exception {
-
-        // 1. Carrega o arquivo .jrxml do classpath (pasta resources/reports/)
-        InputStream jrxmlStream = getClass()
-            .getResourceAsStream("/reports/produtos.jrxml");
-
-        if (jrxmlStream == null) {
-            response.sendError(500, "Arquivo de template não encontrado: /reports/produtos.jrxml");
-            return;
-        }
-
-        // 2. Compila o template JRXML em um JasperReport
-        //    (processo que valida a estrutura XML e prepara para preenchimento)
-        JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
-
-        // 3. Busca todos os produtos do banco de dados
         List<Produto> produtos = service.listar();
 
-        // 4. Cria um DataSource a partir da lista de objetos Java
-        //    O JasperReports acessa os campos via getters (getNome(), getPreco(), etc.)
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(produtos);
-
-        // 5. Parâmetros adicionais para o relatório (poderia passar título, data, etc.)
-        Map<String, Object> parametros = new HashMap<>();
-        parametros.put("TITULO_RELATORIO", "Relatório de Produtos");
-
-        // 6. Preenche o relatório com os dados
-        JasperPrint jasperPrint = JasperFillManager.fillReport(
-            jasperReport, parametros, dataSource
-        );
-
-        // 7. Configura a resposta HTTP para PDF
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline; filename=relatorio-produtos.pdf");
 
-        // 8. Exporta o relatório preenchido para bytes PDF
-        //    e escreve diretamente no OutputStream da resposta HTTP
-        byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
-        response.getOutputStream().write(pdfBytes);
-        response.getOutputStream().flush();
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+
+        // Título
+        Font fontesTitulo = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, Color.BLACK);
+        Paragraph titulo = new Paragraph("Relatório de Produtos", fontesTitulo);
+        titulo.setAlignment(Element.ALIGN_CENTER);
+        document.add(titulo);
+
+        // Data de geração
+        Font fonteData = FontFactory.getFont(FontFactory.HELVETICA, 9, new Color(107, 114, 128));
+        String dataHora = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
+        Paragraph data = new Paragraph("Gerado em: " + dataHora, fonteData);
+        data.setAlignment(Element.ALIGN_CENTER);
+        document.add(data);
+
+        document.add(Chunk.NEWLINE);
+
+        // Tabela: ID | Nome | Categoria | Preço | Quantidade
+        PdfPTable tabela = new PdfPTable(5);
+        tabela.setWidthPercentage(100);
+        tabela.setWidths(new float[]{0.5f, 2.5f, 2f, 1.5f, 1f});
+
+        Color corCabecalho = new Color(37, 99, 235);
+        Font fonteCabecalho = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.WHITE);
+
+        String[] colunas = {"ID", "Nome", "Categoria", "Preço", "Qtd."};
+        int[] alinhamentos = {
+            Element.ALIGN_CENTER,
+            Element.ALIGN_LEFT,
+            Element.ALIGN_LEFT,
+            Element.ALIGN_RIGHT,
+            Element.ALIGN_RIGHT
+        };
+
+        for (int i = 0; i < colunas.length; i++) {
+            PdfPCell celula = new PdfPCell(new Phrase(colunas[i], fonteCabecalho));
+            celula.setBackgroundColor(corCabecalho);
+            celula.setHorizontalAlignment(alinhamentos[i]);
+            celula.setPadding(6);
+            celula.setBorderColor(corCabecalho);
+            tabela.addCell(celula);
+        }
+
+        Font fonteDados = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
+        boolean zebraAlternado = false;
+        for (Produto p : produtos) {
+            Color corLinha = zebraAlternado ? new Color(243, 244, 246) : Color.WHITE;
+            zebraAlternado = !zebraAlternado;
+
+            adicionarCelula(tabela, String.valueOf(p.getId()), fonteDados, corLinha, Element.ALIGN_CENTER);
+            adicionarCelula(tabela, p.getNome(), fonteDados, corLinha, Element.ALIGN_LEFT);
+            adicionarCelula(tabela, p.getCategoria(), fonteDados, corLinha, Element.ALIGN_LEFT);
+            adicionarCelula(tabela, String.format("R$ %.2f", p.getPreco()).replace(".", ","), fonteDados, corLinha, Element.ALIGN_RIGHT);
+            adicionarCelula(tabela, String.valueOf(p.getQuantidade()), fonteDados, corLinha, Element.ALIGN_RIGHT);
+        }
+
+        document.add(tabela);
+
+        // Totalizador
+        document.add(Chunk.NEWLINE);
+        Font fonteTotalizador = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, Color.BLACK);
+        document.add(new Paragraph("Total de produtos cadastrados: " + produtos.size(), fonteTotalizador));
+
+        document.close();
+    }
+
+    private void adicionarCelula(PdfPTable tabela, String texto, Font fonte, Color bg, int alinhamento) {
+        PdfPCell celula = new PdfPCell(new Phrase(texto != null ? texto : "", fonte));
+        celula.setBackgroundColor(bg);
+        celula.setHorizontalAlignment(alinhamento);
+        celula.setPadding(5);
+        tabela.addCell(celula);
     }
 }
